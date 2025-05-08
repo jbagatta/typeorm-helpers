@@ -8,7 +8,7 @@ import {
     FindOptionsRelationsProperty
 } from 'typeorm'
 
-// replace the specified join relations (assumed optional in the Entity) with required ones
+// replace the specified join relations (assumed optional in the Entity) with required ones when requested
 export type IncludeRelations<E extends BaseEntity, K extends keyof E = never> = E & {[Key in K]-?: E[Key]}
  
 declare module 'typeorm' {
