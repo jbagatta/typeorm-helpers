@@ -5,7 +5,7 @@ Utility type augmentations for typeorm
 
 A static function added to all types which extend `BaseEntity`, providing enforcement of property optionality.
 
-Behaves evvectively the same as `BaseEntity.create({...})` except that `create` allows all properties to be optional.
+Behaves effectively the same as `BaseEntity.create({...})` except that `create` allows all properties to be optional.
 
 #### Usage: 
 
