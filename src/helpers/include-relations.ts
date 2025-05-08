@@ -15,38 +15,46 @@ declare module 'typeorm' {
     export interface BaseEntity {
         findIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             this: {new (): E;} & typeof BaseEntity,
-            findOptions: Omit<FindManyOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
+            findOptions: Omit<FindManyOptions<E>, 'relations'> 
+                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
           ): Promise<IncludeRelations<E, K>[]>
         findAndCountIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             this: {new (): E;} & typeof BaseEntity,
-            findOptions: Omit<FindManyOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
+            findOptions: Omit<FindManyOptions<E>, 'relations'> 
+                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
           ): Promise<[IncludeRelations<E, K>[], number]>
         findOneIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             this: {new (): E;} & typeof BaseEntity,
-            findOptions: Omit<FindOneOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
+            findOptions: Omit<FindOneOptions<E>, 'relations'> 
+                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
           ): Promise<IncludeRelations<E, K> | null>
         findOneOrFailIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             this: {new (): E;} & typeof BaseEntity,
-            findOptions: Omit<FindOneOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
+            findOptions: Omit<FindOneOptions<E>, 'relations'> 
+                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
           ): Promise<IncludeRelations<E, K>>
     }
 
     export interface EntityManager {
         findIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             entityTarget: EntityTarget<E>,
-            findOptions: Omit<FindManyOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
+            findOptions: Omit<FindManyOptions<E>, 'relations'> 
+                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
           ): Promise<IncludeRelations<E, K>[]>
         findAndCountIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             entityTarget: EntityTarget<E>,
-            findOptions: Omit<FindManyOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>} 
+            findOptions: Omit<FindManyOptions<E>, 'relations'> 
+                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>} 
           ): Promise<[IncludeRelations<E, K>[], number]>
         findOneIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             entityTarget: EntityTarget<E>,
-            findOptions: Omit<FindOneOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
+            findOptions: Omit<FindOneOptions<E>, 'relations'> 
+                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
           ): Promise<IncludeRelations<E, K> | null>
         findOneOrFailIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             entityTarget: EntityTarget<E>,
-            findOptions: Omit<FindOneOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
+            findOptions: Omit<FindOneOptions<E>, 'relations'> 
+                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
           ): Promise<IncludeRelations<E, K>>
     }
 }
