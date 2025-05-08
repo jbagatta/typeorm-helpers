@@ -1,16 +1,15 @@
 {
   "name": "typeorm-helpers",
   "version": "1.0.0",
+  "author": "John Bagatta",
   "description": "useful type magic for working with typeorm",
-  "main": "src/index.ts",
+  "license": "MIT",
   "types": "./build/index.d.ts",
   "scripts": {
     "clean": "rm -r ./build",
     "build": "tsc -b",
     "test": "jest --silent ./tests/unit/**/*"
   },
-  "author": "John Bagatta",
-  "license": "ISC",
   "dependencies": {
     "typeorm": "^0.3.22"
   },
