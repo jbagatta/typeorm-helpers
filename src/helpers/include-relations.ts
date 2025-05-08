@@ -13,48 +13,60 @@ export type IncludeRelations<E extends BaseEntity, K extends keyof E = never> = 
  
 declare module 'typeorm' {
     export interface BaseEntity {
-        find_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
+        findIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             this: {new (): E;} & typeof BaseEntity,
             findOptions: Omit<FindManyOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
           ): Promise<IncludeRelations<E, K>[]>
-        findAndCount_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
+        findAndCountIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             this: {new (): E;} & typeof BaseEntity,
             findOptions: Omit<FindManyOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
           ): Promise<[IncludeRelations<E, K>[], number]>
-        findOne_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
+        findOneIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             this: {new (): E;} & typeof BaseEntity,
             findOptions: Omit<FindOneOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
           ): Promise<IncludeRelations<E, K> | null>
-        findOneOrFail_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
+        findOneOrFailIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             this: {new (): E;} & typeof BaseEntity,
             findOptions: Omit<FindOneOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
           ): Promise<IncludeRelations<E, K>>
     }
 
     export interface EntityManager {
-        find_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
+        findIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             entityTarget: EntityTarget<E>,
             findOptions: Omit<FindManyOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
           ): Promise<IncludeRelations<E, K>[]>
-        findAndCount_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
+        findAndCountIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             entityTarget: EntityTarget<E>,
             findOptions: Omit<FindManyOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>} 
           ): Promise<[IncludeRelations<E, K>[], number]>
-        findOne_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
+        findOneIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             entityTarget: EntityTarget<E>,
             findOptions: Omit<FindOneOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
           ): Promise<IncludeRelations<E, K> | null>
-        findOneOrFail_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
+        findOneOrFailIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
             entityTarget: EntityTarget<E>,
             findOptions: Omit<FindOneOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
           ): Promise<IncludeRelations<E, K>>
     }
 }
 
-BaseEntity.prototype.find_IncludeRelations = find2_IncludeRelations
-export async function find2_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
+BaseEntity.prototype.findIncludeRelations = findIncludeRelations_BaseEntity
+BaseEntity.prototype.findAndCountIncludeRelations = findAndCountIncludeRelations_BaseEntity
+BaseEntity.prototype.findOneIncludeRelations = findOneIncludeRelations_BaseEntity
+BaseEntity.prototype.findOneOrFailIncludeRelations = findOneOrFailIncludeRelations_BaseEntity
+
+EntityManager.prototype.findIncludeRelations = findIncludeRelations_EntityManager
+EntityManager.prototype.findAndCountIncludeRelations = findAndCountIncludeRelations_EntityManager
+EntityManager.prototype.findOneIncludeRelations = findOneIncludeRelations_EntityManager
+EntityManager.prototype.findOneOrFailIncludeRelations = findOneOrFailIncludeRelations_EntityManager
+
+// BaseEntity find augmentations
+
+async function findIncludeRelations_BaseEntity<E extends BaseEntity, K extends keyof E = never>(
     this: {new (): E;} & typeof BaseEntity,
-    findOptions: Omit<FindManyOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
+    findOptions: Omit<FindManyOptions<E>, 'relations'> 
+        & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
   ): Promise<IncludeRelations<E, K>[]> {
   const entities = await this.find({
     ...findOptions,
@@ -64,24 +76,10 @@ export async function find2_IncludeRelations<E extends BaseEntity, K extends key
   return entities.map((e) => asIncludeRelations(e, findOptions.relations))
 }
 
-EntityManager.prototype.find_IncludeRelations = find_IncludeRelations
-export async function find_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
-    this: EntityManager,
-    entityTarget: EntityTarget<E>,
-    findOptions: Omit<FindManyOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
-): Promise<IncludeRelations<E, K>[]> {
-  const entities = await this.find<E>(entityTarget, {
-    ...findOptions,
-    relations: buildFindOptionsRelations(findOptions.relations)
-  })
-
-  return entities.map((e) => asIncludeRelations(e, findOptions.relations))
-}
-
-BaseEntity.prototype.findAndCount_IncludeRelations = findAndCount2_IncludeRelations
-export async function findAndCount2_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
+async function findAndCountIncludeRelations_BaseEntity<E extends BaseEntity, K extends keyof E = never>(
     this: {new (): E;} & typeof BaseEntity,
-    findOptions: Omit<FindManyOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
+    findOptions: Omit<FindManyOptions<E>, 'relations'> 
+        & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
   ): Promise<[IncludeRelations<E, K>[], number]> {
   const entities = await this.findAndCount({
     ...findOptions,
@@ -91,24 +89,10 @@ export async function findAndCount2_IncludeRelations<E extends BaseEntity, K ext
   return [entities[0].map((e) => asIncludeRelations(e, findOptions.relations)), entities[1]]
 }
 
-EntityManager.prototype.findAndCount_IncludeRelations = findAndCount_IncludeRelations
-export async function findAndCount_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
-    this: EntityManager,
-    entityTarget: EntityTarget<E>,
-    findOptions: Omit<FindManyOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
-): Promise<[IncludeRelations<E, K>[], number]> {
-  const entities = await this.findAndCount<E>(entityTarget, {
-    ...findOptions,
-    relations: buildFindOptionsRelations(findOptions.relations)
-  })
-
-  return [entities[0].map((e) => asIncludeRelations(e, findOptions.relations)), entities[1]]
-}
-
-BaseEntity.prototype.findOne_IncludeRelations = findOne2_IncludeRelations
-export async function findOne2_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
+async function findOneIncludeRelations_BaseEntity<E extends BaseEntity, K extends keyof E = never>(
     this: {new (): E;} & typeof BaseEntity,
-    findOptions: Omit<FindOneOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
+    findOptions: Omit<FindOneOptions<E>, 'relations'> 
+        & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
   ): Promise<IncludeRelations<E, K> | null> {
   const entity = await this.findOne({
     ...findOptions,
@@ -118,24 +102,10 @@ export async function findOne2_IncludeRelations<E extends BaseEntity, K extends 
   return entity ? asIncludeRelations(entity, findOptions.relations) : null
 }
 
-EntityManager.prototype.findOne_IncludeRelations = findOne_IncludeRelations
-export async function findOne_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
-    this: EntityManager,
-    entityTarget: EntityTarget<E>,
-    findOptions: Omit<FindOneOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
-): Promise<IncludeRelations<E, K> | null> {
-  const entity = await this.findOne<E>(entityTarget, {
-    ...findOptions,
-    relations: buildFindOptionsRelations(findOptions.relations)
-  })
-
-  return entity ? asIncludeRelations(entity, findOptions.relations) : null
-}
-
-BaseEntity.prototype.findOneOrFail_IncludeRelations = findOneOrFail2_IncludeRelations as any
-export async function findOneOrFail2_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
+async function findOneOrFailIncludeRelations_BaseEntity<E extends BaseEntity, K extends keyof E = never>(
     this: {new (): E;} & typeof BaseEntity,
-    findOptions: Omit<FindOneOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
+    findOptions: Omit<FindOneOptions<E>, 'relations'> 
+        & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
   ): Promise<IncludeRelations<E, K>> {
   const entity = await this.findOneOrFail({
     ...findOptions,
@@ -145,11 +115,55 @@ export async function findOneOrFail2_IncludeRelations<E extends BaseEntity, K ex
   return asIncludeRelations(entity, findOptions.relations)
 }
 
-EntityManager.prototype.findOneOrFail_IncludeRelations = findOneOrFail_IncludeRelations
-export async function findOneOrFail_IncludeRelations<E extends BaseEntity, K extends keyof E = never>(
+// EntityManager find augmentations
+
+async function findIncludeRelations_EntityManager<E extends BaseEntity, K extends keyof E = never>(
     this: EntityManager,
     entityTarget: EntityTarget<E>,
-    findOptions: Omit<FindOneOptions<E>, 'relations'> & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
+    findOptions: Omit<FindManyOptions<E>, 'relations'> 
+        & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
+): Promise<IncludeRelations<E, K>[]> {
+  const entities = await this.find<E>(entityTarget, {
+    ...findOptions,
+    relations: buildFindOptionsRelations(findOptions.relations)
+  })
+
+  return entities.map((e) => asIncludeRelations(e, findOptions.relations))
+}
+
+async function findAndCountIncludeRelations_EntityManager<E extends BaseEntity, K extends keyof E = never>(
+    this: EntityManager,
+    entityTarget: EntityTarget<E>,
+    findOptions: Omit<FindManyOptions<E>, 'relations'> 
+        & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
+): Promise<[IncludeRelations<E, K>[], number]> {
+  const entities = await this.findAndCount<E>(entityTarget, {
+    ...findOptions,
+    relations: buildFindOptionsRelations(findOptions.relations)
+  })
+
+  return [entities[0].map((e) => asIncludeRelations(e, findOptions.relations)), entities[1]]
+}
+
+async function findOneIncludeRelations_EntityManager<E extends BaseEntity, K extends keyof E = never>(
+    this: EntityManager,
+    entityTarget: EntityTarget<E>,
+    findOptions: Omit<FindOneOptions<E>, 'relations'> 
+        & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
+): Promise<IncludeRelations<E, K> | null> {
+  const entity = await this.findOne<E>(entityTarget, {
+    ...findOptions,
+    relations: buildFindOptionsRelations(findOptions.relations)
+  })
+
+  return entity ? asIncludeRelations(entity, findOptions.relations) : null
+}
+
+async function findOneOrFailIncludeRelations_EntityManager<E extends BaseEntity, K extends keyof E = never>(
+    this: EntityManager,
+    entityTarget: EntityTarget<E>,
+    findOptions: Omit<FindOneOptions<E>, 'relations'> 
+        & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
 ): Promise<IncludeRelations<E, K>> {
   const entity = await this.findOneOrFail<E>(entityTarget, {
     ...findOptions,
@@ -179,12 +193,11 @@ function buildFindOptionsRelations<E extends BaseEntity, K extends keyof E = nev
 
 function asIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
     entity: E,
-    relations?: Record<K, any> | K[]
+    relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>> | K[]
 ) {
     if (Array.isArray(relations)) {
         assertHasRelations(entity, relations)
     } else {
-
         assertHasRelations(
             entity, 
             Object.entries(relations ?? {})
@@ -192,6 +205,7 @@ function asIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
                 .map(([r, _]) => r) as Array<K>
         )
     }
+
     return entity
 }
 
