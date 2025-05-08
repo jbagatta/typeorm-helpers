@@ -12,67 +12,9 @@ import {
 // with required ones when requested in the query's joined relations
 export type IncludeRelations<E extends BaseEntity, K extends keyof E = never> = E & {[Key in K]-?: E[Key]};
  
-declare module 'typeorm' {
-    export interface BaseEntity {
-        findIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
-            this: {new (): E;} & typeof BaseEntity,
-            findOptions: Omit<FindManyOptions<E>, 'relations'> 
-                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
-          ): Promise<IncludeRelations<E, K>[]>;
-        findAndCountIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
-            this: {new (): E;} & typeof BaseEntity,
-            findOptions: Omit<FindManyOptions<E>, 'relations'> 
-                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
-          ): Promise<[IncludeRelations<E, K>[], number]>;
-        findOneIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
-            this: {new (): E;} & typeof BaseEntity,
-            findOptions: Omit<FindOneOptions<E>, 'relations'> 
-                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
-          ): Promise<IncludeRelations<E, K> | null>;
-        findOneOrFailIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
-            this: {new (): E;} & typeof BaseEntity,
-            findOptions: Omit<FindOneOptions<E>, 'relations'> 
-                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
-          ): Promise<IncludeRelations<E, K>>;
-    }
-
-    export interface EntityManager {
-        findIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
-            entityTarget: EntityTarget<E>,
-            findOptions: Omit<FindManyOptions<E>, 'relations'> 
-                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
-          ): Promise<IncludeRelations<E, K>[]>;
-        findAndCountIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
-            entityTarget: EntityTarget<E>,
-            findOptions: Omit<FindManyOptions<E>, 'relations'> 
-                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>} 
-          ): Promise<[IncludeRelations<E, K>[], number]>;
-        findOneIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
-            entityTarget: EntityTarget<E>,
-            findOptions: Omit<FindOneOptions<E>, 'relations'> 
-                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
-          ): Promise<IncludeRelations<E, K> | null>;
-        findOneOrFailIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
-            entityTarget: EntityTarget<E>,
-            findOptions: Omit<FindOneOptions<E>, 'relations'> 
-                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
-          ): Promise<IncludeRelations<E, K>>;
-    }
-}
-
-BaseEntity.prototype.findIncludeRelations = findIncludeRelations_BaseEntity;
-BaseEntity.prototype.findAndCountIncludeRelations = findAndCountIncludeRelations_BaseEntity;
-BaseEntity.prototype.findOneIncludeRelations = findOneIncludeRelations_BaseEntity;
-BaseEntity.prototype.findOneOrFailIncludeRelations = findOneOrFailIncludeRelations_BaseEntity;
-
-EntityManager.prototype.findIncludeRelations = findIncludeRelations_EntityManager;
-EntityManager.prototype.findAndCountIncludeRelations = findAndCountIncludeRelations_EntityManager;
-EntityManager.prototype.findOneIncludeRelations = findOneIncludeRelations_EntityManager;
-EntityManager.prototype.findOneOrFailIncludeRelations = findOneOrFailIncludeRelations_EntityManager;
-
 // BaseEntity find augmentations
 
-async function findIncludeRelations_BaseEntity<E extends BaseEntity, K extends keyof E = never>(
+export async function findIncludeRelations_BaseEntity<E extends BaseEntity, K extends keyof E = never>(
     this: {new (): E;} & typeof BaseEntity,
     findOptions: Omit<FindManyOptions<E>, 'relations'> 
         & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
@@ -85,7 +27,7 @@ async function findIncludeRelations_BaseEntity<E extends BaseEntity, K extends k
   return entities.map((e) => asIncludeRelations(e, findOptions.relations));
 }
 
-async function findAndCountIncludeRelations_BaseEntity<E extends BaseEntity, K extends keyof E = never>(
+export async function findAndCountIncludeRelations_BaseEntity<E extends BaseEntity, K extends keyof E = never>(
     this: {new (): E;} & typeof BaseEntity,
     findOptions: Omit<FindManyOptions<E>, 'relations'> 
         & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
@@ -98,7 +40,7 @@ async function findAndCountIncludeRelations_BaseEntity<E extends BaseEntity, K e
   return [entities[0].map((e) => asIncludeRelations(e, findOptions.relations)), entities[1]];
 }
 
-async function findOneIncludeRelations_BaseEntity<E extends BaseEntity, K extends keyof E = never>(
+export async function findOneIncludeRelations_BaseEntity<E extends BaseEntity, K extends keyof E = never>(
     this: {new (): E;} & typeof BaseEntity,
     findOptions: Omit<FindOneOptions<E>, 'relations'> 
         & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
@@ -111,7 +53,7 @@ async function findOneIncludeRelations_BaseEntity<E extends BaseEntity, K extend
   return entity ? asIncludeRelations(entity, findOptions.relations) : null;
 }
 
-async function findOneOrFailIncludeRelations_BaseEntity<E extends BaseEntity, K extends keyof E = never>(
+export async function findOneOrFailIncludeRelations_BaseEntity<E extends BaseEntity, K extends keyof E = never>(
     this: {new (): E;} & typeof BaseEntity,
     findOptions: Omit<FindOneOptions<E>, 'relations'> 
         & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
@@ -126,7 +68,7 @@ async function findOneOrFailIncludeRelations_BaseEntity<E extends BaseEntity, K 
 
 // EntityManager find augmentations
 
-async function findIncludeRelations_EntityManager<E extends BaseEntity, K extends keyof E = never>(
+export async function findIncludeRelations_EntityManager<E extends BaseEntity, K extends keyof E = never>(
     this: EntityManager,
     entityTarget: EntityTarget<E>,
     findOptions: Omit<FindManyOptions<E>, 'relations'> 
@@ -140,7 +82,7 @@ async function findIncludeRelations_EntityManager<E extends BaseEntity, K extend
   return entities.map((e) => asIncludeRelations(e, findOptions.relations));
 }
 
-async function findAndCountIncludeRelations_EntityManager<E extends BaseEntity, K extends keyof E = never>(
+export async function findAndCountIncludeRelations_EntityManager<E extends BaseEntity, K extends keyof E = never>(
     this: EntityManager,
     entityTarget: EntityTarget<E>,
     findOptions: Omit<FindManyOptions<E>, 'relations'> 
@@ -154,7 +96,7 @@ async function findAndCountIncludeRelations_EntityManager<E extends BaseEntity, 
   return [entities[0].map((e) => asIncludeRelations(e, findOptions.relations)), entities[1]];
 }
 
-async function findOneIncludeRelations_EntityManager<E extends BaseEntity, K extends keyof E = never>(
+export async function findOneIncludeRelations_EntityManager<E extends BaseEntity, K extends keyof E = never>(
     this: EntityManager,
     entityTarget: EntityTarget<E>,
     findOptions: Omit<FindOneOptions<E>, 'relations'> 
@@ -168,7 +110,7 @@ async function findOneIncludeRelations_EntityManager<E extends BaseEntity, K ext
   return entity ? asIncludeRelations(entity, findOptions.relations) : null;
 }
 
-async function findOneOrFailIncludeRelations_EntityManager<E extends BaseEntity, K extends keyof E = never>(
+export async function findOneOrFailIncludeRelations_EntityManager<E extends BaseEntity, K extends keyof E = never>(
     this: EntityManager,
     entityTarget: EntityTarget<E>,
     findOptions: Omit<FindOneOptions<E>, 'relations'> 

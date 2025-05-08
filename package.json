@@ -5,6 +5,7 @@
   "description": "useful type magic for working with typeorm",
   "license": "MIT",
   "types": "./build/index.d.ts",
+  "main": "./build/index.js",
   "scripts": {
     "clean": "rm -r ./build",
     "build": "tsc -b",
