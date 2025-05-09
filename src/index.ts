@@ -12,29 +12,10 @@ import { findAndCountIncludeRelations_BaseEntity, findAndCountIncludeRelations_E
 declare module 'typeorm' {
     export namespace BaseEntity {
         export let make: typeof _make;
-    }
-
-    export interface BaseEntity {
-        findIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
-            this: {new (): E;} & typeof BaseEntity,
-            findOptions: Omit<FindManyOptions<E>, 'relations'> 
-                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
-          ): Promise<IncludeRelations<E, K>[]>;
-        findAndCountIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
-            this: {new (): E;} & typeof BaseEntity,
-            findOptions: Omit<FindManyOptions<E>, 'relations'> 
-                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
-          ): Promise<[IncludeRelations<E, K>[], number]>;
-        findOneIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
-            this: {new (): E;} & typeof BaseEntity,
-            findOptions: Omit<FindOneOptions<E>, 'relations'> 
-                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
-          ): Promise<IncludeRelations<E, K> | null>;
-        findOneOrFailIncludeRelations<E extends BaseEntity, K extends keyof E = never>(
-            this: {new (): E;} & typeof BaseEntity,
-            findOptions: Omit<FindOneOptions<E>, 'relations'> 
-                & {relations?: Record<K, FindOptionsRelationsProperty<NonNullable<E[K]>>>}
-          ): Promise<IncludeRelations<E, K>>;
+        export let findIncludeRelations: typeof findIncludeRelations_BaseEntity
+        export let findAndCountIncludeRelations: typeof findAndCountIncludeRelations_BaseEntity
+        export let findOneIncludeRelations: typeof findOneIncludeRelations_BaseEntity
+        export let findOneOrFailIncludeRelations: typeof findOneOrFailIncludeRelations_BaseEntity
     }
 
     export interface EntityManager {
@@ -63,10 +44,10 @@ declare module 'typeorm' {
 
 BaseEntity.make = _make;
 
-BaseEntity.prototype.findIncludeRelations = findIncludeRelations_BaseEntity;
-BaseEntity.prototype.findAndCountIncludeRelations = findAndCountIncludeRelations_BaseEntity;
-BaseEntity.prototype.findOneIncludeRelations = findOneIncludeRelations_BaseEntity;
-BaseEntity.prototype.findOneOrFailIncludeRelations = findOneOrFailIncludeRelations_BaseEntity;
+BaseEntity.findIncludeRelations = findIncludeRelations_BaseEntity;
+BaseEntity.findAndCountIncludeRelations = findAndCountIncludeRelations_BaseEntity;
+BaseEntity.findOneIncludeRelations = findOneIncludeRelations_BaseEntity;
+BaseEntity.findOneOrFailIncludeRelations = findOneOrFailIncludeRelations_BaseEntity;
 
 EntityManager.prototype.findIncludeRelations = findIncludeRelations_EntityManager;
 EntityManager.prototype.findAndCountIncludeRelations = findAndCountIncludeRelations_EntityManager;
