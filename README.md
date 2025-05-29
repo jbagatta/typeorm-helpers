@@ -11,7 +11,7 @@ An object of type `IncludeRelations<EntityType, ...>` is a superset of the origi
 
 Consider the following entities:
 
-```
+```typescript
 class OneToOneRelation extends BaseEntity {
     id!: string
     testEntityId!: string
@@ -43,7 +43,7 @@ class TestEntity extends BaseEntity {
 
 The standard behavior for a `find` query is to load no relations. This behavior is preserved in the `IncludeRelations` functions:
 
-```
+```typescript
 // No relations, type = IncludeRelations<TestEntity, never>
 const testEntity1 = await TestEntity.findOneOrFailIncludeRelations({where: {id: 'id'}})
 
@@ -61,7 +61,7 @@ However, when relations are requested, the typing on the returned object is modi
 
 For a non-optional one-to-one relation, the type is now explicit:
 
-```
+```typescript
 // Required one to one relation, type = IncludeRelations<TestEntity, "oneToOneRelation">
 const testEntity2 = await TestEntity.findOneOrFailIncludeRelations({where: {id: 'id'}, relations: {oneToOneRelation: true}})
 
@@ -71,7 +71,7 @@ testEntity2.oneToOneRelation
 
 For an optional one-to-one relation, nullability is kept to account for nonexistent relations, but optionality is removed:
 
-```
+```typescript
 // Nullable one to one relation, type = IncludeRelations<TestEntity, "oneToOneNullableRelation">
 const testEntity3 = await TestEntity.findOneOrFailIncludeRelations({where: {id: 'id'}, relations: {oneToOneNullableRelation: true}})
 
@@ -81,7 +81,7 @@ testEntity3.oneToOneNullableRelation
 
 For a many-to-one relation, the array type is no longer optional (though the array can of course be empty):
 
-```
+```typescript
 // Many to one relations, type = IncludeRelations<TestEntity, "manyToOneRelations">
 const testEntity4 = await TestEntity.findOneOrFailIncludeRelations({where: {id: 'id'}, relations: {manyToOneRelations: true}})
 
@@ -89,9 +89,9 @@ const testEntity4 = await TestEntity.findOneOrFailIncludeRelations({where: {id: 
 testEntity4.manyToOneRelations
 ```
 
-Recursive relations can be loaded as well, although it is important to note that `IncludeRelations` typing is NOT recursive - the type magic does not extend past the first layer of joining:
+Recursive relations can be loaded as well, although it is important to note that `IncludeRelations` typing is NOT recursive - the type magic does not extend past the first layer of joining. *(TODO - make this work recursively in the future)*
 
-```
+```typescript
 // type = IncludeRelations<TestEntity, "oneToOneRelation">
 const testEntity5 = await TestEntity.findOneOrFailIncludeRelations({where: {id: 'id'}, relations: {oneToOneRelation: {recursiveRelation: true}}})
 
@@ -107,7 +107,7 @@ testEntity5.oneToOneRelation.recursiveRelation
 
 The library provides `IncludeRelations` functions for all `BaseEntity.find*` operations in which relations are supported:
 
-```
+```typescript
 // IncludeRelations<TestEntity, "oneToOneNullableRelation" | "oneToOneRelation"> | null
 const a = TestEntity.findOneIncludeRelations({
     where: {id: 'a'}, relations: {oneToOneNullableRelation: true, oneToOneRelation: true}
@@ -131,7 +131,7 @@ const d = TestEntity.findAndCountIncludeRelations({
 
 as well as the equivalent operations on `EntityManager` (e.g. transactions):
 
-```
+```typescript
 async function loadResources(db: DataSource, id: string) {
   await db.transaction(async (txn) => {
     // IncludeRelations<TestEntity, "oneToOneNullableRelation" | "oneToOneRelation"> | null
@@ -166,7 +166,7 @@ Behaves effectively the same as `BaseEntity.create({...})` except that `create` 
 
 #### Usage: 
 
-```
+```typescript
 import { BaseEntity } from "typeorm-helpers";
 
 class TestEntityNoId extends BaseEntity {
@@ -192,7 +192,7 @@ The `id` property is treated as a special case, in that even a required `id` wil
 
 This is because, in many/most cases, the `id` is auto-generated on insert by the database. Leaving it optional allows for setting in cases of client-generated IDs without requiring it.
 
-```
+```typescript
 class TestEntityStringId extends BaseEntity {
     id!: string
     requiredProp!: string
